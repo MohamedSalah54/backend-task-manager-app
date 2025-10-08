@@ -11,14 +11,18 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://frontend-task-manager-app.vercel.app', 
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+app.enableCors({
+  origin: [
+    'https://frontend-task-manager-app-cp65.vercel.app', 
+    'http://localhost:3000',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+});
+
 
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
