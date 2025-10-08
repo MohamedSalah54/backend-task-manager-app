@@ -17,7 +17,10 @@ import { NotificationsModule } from './notifications/notifications.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const mongoUri = configService.get<string>('MONGO_URI');
+        console.log('MONGO_URI =>', process.env.MONGO_URI);
+
         return { uri: mongoUri };
+        
       },
     }),
     AuthModule,

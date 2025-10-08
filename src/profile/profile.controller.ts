@@ -64,7 +64,9 @@ export class ProfileController {
       console.log('📂 [BACKEND] File received:', file);
       console.log('📍 [BACKEND] File path:', file.path);
 
-      dto.profileImage = `uploads/profile/${file.filename}`;
+      // dto.profileImage = `uploads/profile/${file.filename}`;
+
+      dto.profileImage = `/static/uploads/profile/${file.filename}`;
 
       console.log(
         '✅ [BACKEND] Profile image path saved to DB:',
