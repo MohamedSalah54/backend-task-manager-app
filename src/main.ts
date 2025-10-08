@@ -13,7 +13,7 @@ async function bootstrap() {
 
 app.enableCors({
   origin: [
-    'https://frontnext-p5yaau17e-mohamed-salah-eldins-projects.vercel.app', 
+    'https://frontend-task-manager-app-cp65.vercel.app', 
     'http://localhost:3000',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
