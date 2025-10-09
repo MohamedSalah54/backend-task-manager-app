@@ -23,10 +23,12 @@ interface RequestWithUser extends Request {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.TEAM_LEAD)
+  constructor(
+    private readonly authService: AuthService,
+  ) { }
+  
+   @UseGuards(JwtAuthGuard, RolesGuard)
+   @Roles(UserRole.ADMIN,UserRole.TEAM_LEAD)
   @Post('create-user')
   createUser(@Body() dto: CreateUserDto) {
     return this.authService.createUserByAdmin(dto);
