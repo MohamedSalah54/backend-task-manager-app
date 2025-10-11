@@ -29,7 +29,7 @@ export class TasksController {
   @Post('createTaskForSelf')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   createTaskForSelf(@Body() createTaskDto: CreateTaskDto, @Req() req: RequestWithUser): Promise<Task> {
-    const userId = req.user.userId;
+    const userId = req.user.userId ;
     return this.tasksService.createTaskForSelf(createTaskDto, userId);
   }
 
