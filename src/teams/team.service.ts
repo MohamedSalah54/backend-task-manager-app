@@ -171,11 +171,7 @@ import { Profile } from 'src/profile/schema/profile.schema';
       return populatedTeam;
     }
     
-    
-    
-    
-      
-      
+  
     
     async updateTeam(
       teamId: string,
@@ -365,12 +361,6 @@ import { Profile } from 'src/profile/schema/profile.schema';
       return populatedTeam[0];
     }
     
-    
-    
-    
-    
-    
-  
 
     
     async deleteTeam(id: string, currentUser: User | any) {
@@ -455,60 +445,121 @@ import { Profile } from 'src/profile/schema/profile.schema';
     
     
   
+    // async getMyTeam(currentUser: User): Promise<Team | null> {
+    //   if (!currentUser.team) {
+    //     return null;
+    //   }
+    
+    //   const team = await this.teamModel.aggregate([
+    //     { $match: { _id: currentUser.team } },
+    //     {
+    //       $lookup: {
+    //         from: 'users',
+    //         localField: 'teamLeader',
+    //         foreignField: '_id',
+    //         as: 'teamLeader',
+    //       },
+    //     },
+    //     { $unwind: '$teamLeader' },
+    //     {
+    //       $lookup: {
+    //         from: 'users',
+    //         localField: 'members',
+    //         foreignField: '_id',
+    //         as: 'members',
+    //       },
+    //     },
+    //     {
+    //       $project: {
+    //         name: 1,
+    //         description: 1,
+    //         createdAt: 1,
+    //         updatedAt: 1,
+    //         teamLeader: {
+    //           _id: 1,
+    //           name: 1,
+    //           email: 1,
+    //           image: 1,
+    //           position:1
+    //         },
+    //         members: {
+    //           _id: 1,
+    //           name: 1,
+    //           email: 1,
+    //           image: 1,
+    //           position:1
+    //         },
+    //       },
+    //     },
+    //   ]);
+    
+    //   if (team.length === 0) {
+    //     return null;
+    //   }
+    
+    //   return team[0];
+    // }
     async getMyTeam(currentUser: User): Promise<Team | null> {
-      if (!currentUser.team) {
-        return null;
-      }
-    
-      const team = await this.teamModel.aggregate([
-        { $match: { _id: currentUser.team } },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'teamLeader',
-            foreignField: '_id',
-            as: 'teamLeader',
-          },
+  if (!currentUser.team) {
+    return null;
+  }
+
+  const team = await this.teamModel.aggregate([
+    { $match: { _id: new Types.ObjectId(currentUser.team) } },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'teamLeader',
+        foreignField: '_id',
+        as: 'teamLeader',
+      },
+    },
+    { $unwind: { path: '$teamLeader', preserveNullAndEmptyArrays: true } },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'members',
+        foreignField: '_id',
+        as: 'members',
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        description: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        teamLeader: {
+          _id: '$teamLeader._id',
+          name: '$teamLeader.name',
+          email: '$teamLeader.email',
+          image: '$teamLeader.image',
+          position: '$teamLeader.position',
         },
-        { $unwind: '$teamLeader' },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'members',
-            foreignField: '_id',
-            as: 'members',
-          },
-        },
-        {
-          $project: {
-            name: 1,
-            description: 1,
-            createdAt: 1,
-            updatedAt: 1,
-            teamLeader: {
-              _id: 1,
-              name: 1,
-              email: 1,
-              image: 1,
-              position:1
+        members: {
+          $map: {
+            input: '$members',
+            as: 'm',
+            in: {
+              _id: '$$m._id',
+              name: '$$m.name',
+              email: '$$m.email',
+              image: '$$m.image',
+              position: '$$m.position',
             },
-            members: {
-              _id: 1,
-              name: 1,
-              email: 1,
-              image: 1,
-              position:1
-            },
           },
         },
-      ]);
-    
-      if (team.length === 0) {
-        return null;
-      }
-    
-      return team[0];
-    }
+      },
+    },
+  ]);
+
+  if (team.length === 0) {
+    return null;
+  }
+
+  return team[0];
+}
+
     
   
     async checkUser(email: string) {
