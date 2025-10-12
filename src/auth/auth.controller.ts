@@ -23,12 +23,10 @@ interface RequestWithUser extends Request {
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-  ) { }
-  
-   @UseGuards(JwtAuthGuard, RolesGuard)
-   @Roles(UserRole.ADMIN,UserRole.TEAM_LEAD)
+  constructor(private readonly authService: AuthService) {}
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.TEAM_LEAD)
   @Post('create-user')
   createUser(@Body() dto: CreateUserDto) {
     return this.authService.createUserByAdmin(dto);
@@ -44,10 +42,9 @@ export class AuthController {
 
     res.cookie('jwt', token, {
       httpOnly: true,
-      // secure: true,
-      // sameSite: 'none',
-          secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: '.up.railway.app',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
     });
