@@ -40,14 +40,14 @@ export class AuthController {
   ) {
     const { token, user } = await this.authService.login(loginUserDto);
 
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      domain: '.up.railway.app',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/',
-    });
+res.cookie('jwt', token, {
+  httpOnly: true,
+  secure: true, 
+  sameSite: 'none', 
+  path: '/', 
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
 
     return {
       message: 'Login successful',
